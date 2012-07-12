@@ -1,0 +1,85 @@
+from: http://www.ownedcore.com/forums/diablo-3/diablo-3-guides/361465-switch-gear-seconds-using-logitech-keyboard-mouse-g15-g11-g19-g13-g300-g400.html
+
+function OnEvent(event, arg)
+ if (event == "G_PRESSED" and arg == 4) then
+ Letterbox = ""
+ Random = "X"
+--Save current cursor position
+ x, y = GetMousePosition();
+--Open Inventory
+ PressAndReleaseKey("c")
+ Sleep(20);
+--Equip items by X and Y axis, Item Volume (1 or 2), IsLetterbox(VideoOption in game "X" if set),
+--IsRandom(set "X' if you need random mouse pointer), Modificator ("ralt", etc)
+ EquipItemInventory(2, 1, 1, Letterbox, Random) 
+ EquipItemInventory(2, 2, 1, Letterbox, Random) 
+ EquipItemInventory(3, 1, 1, Letterbox, Random) 
+ EquipItemInventory(3, 2, 1, Letterbox, Random, "lalt") 
+ EquipItemInventory(4, 1, 2, Letterbox, Random) 
+ EquipItemInventory(5, 1, 2, Letterbox, Random) 
+ EquipItemInventory(6, 1, 2, Letterbox, Random) 
+ EquipItemInventory(7, 1, 2, Letterbox, Random) 
+ EquipItemInventory(8, 1, 2, Letterbox, Random) 
+ EquipItemInventory(9, 1, 2, Letterbox, Random)  
+ EquipItemInventory(10, 1, 2, Letterbox, Random)  
+--Close Inventory
+ PressAndReleaseKey("c")
+ MoveMouseTo(x, y)
+ end
+-------------------------------------------
+--View current mouse position on LCD screen
+ if (event == "G_PRESSED" and arg == 2) then
+ ClearLCD ()
+ x, y = GetMousePosition();
+ OutputLCDMessage("Mouse is at x=" .. x .. "; y= " .. y, 2000)
+-- OutputLogMessage("x=" .. x .. "; y= " .. y .. "\n")
+ end
+end
+----------------------------------------
+--Random clicking inside square limits--
+----------------------------------------
+function EquipItemInventory (Item_X, Item_Y, SlotVolume, IsLetterbox, IsRandom, Modify)
+--Default values
+
+if IsLetterbox == "X" then
+ MinVal_X = {48400, 50600, 51800, 53500, 55200, 56700, 58500, 60200, 61800, 63500}
+ MaxVal_X = {49400, 51000, 52700, 54300, 56000, 57700, 59300, 61000, 62700, 64300}
+ MinVal_Y = {35700, 38500, 41000, 43800, 46400, 48800}
+ MaxVal_Y = {37700, 39800, 42500, 45000, 47700, 50200}
+else
+ MinVal_X = {48933, 50610, 52351, 53951, 55630, 57301, 58975, 60580, 62253, 63930}
+ MaxVal_X = {48938, 50614, 52353, 53958, 55633, 57304, 58979, 60482, 62256, 63934}
+ MinVal_Y = {36200, 39000, 41800, 44800, 48461, 51561}
+ MaxVal_Y = {37700, 40500, 43500, 46500, 48468, 51566}
+end
+--Use random function
+if IsRandom == "X" then
+ MouseX = MinVal_X[Item_X] + math.random(1, math.abs(MaxVal_X[Item_X] - MinVal_X[Item_X]))
+ if SlotVolume == 1 then
+ MouseY = MinVal_Y[Item_Y] + math.random(1, math.abs(MaxVal_Y[Item_Y] - MinVal_Y[Item_Y]))
+ elseif SlotVolume == 2 then
+ MouseY = MinVal_Y[Item_Y] + math.random(1, math.abs(MaxVal_Y[Item_Y+1] - MinVal_Y[Item_Y]))
+ end
+else
+ MouseX = math.ceil((MinVal_X[Item_X] + MaxVal_X[Item_X])/2)
+ if SlotVolume == 1 then
+ MouseY = math.ceil((MinVal_Y[Item_Y] + MaxVal_Y[Item_Y])/2)
+ elseif SlotVolume == 2 then
+ MouseY = math.ceil((MinVal_Y[Item_Y] + MaxVal_Y[Item_Y+1])/2)
+ end
+end
+
+MoveMouseTo(MouseX, MouseY)
+if Modify then
+ PressKey(Modify)
+ Sleep(50);
+end
+--Mouse right click
+PressAndReleaseMouseButton(3)
+--Right click with random time from 100 ms to 150
+Sleep(math.random(100,150));
+if Modify then
+ ReleaseKey(Modify)
+ Sleep(50);
+end
+end
