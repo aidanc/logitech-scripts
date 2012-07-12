@@ -1,0 +1,96 @@
+function OnEvent(event, arg)
+ if (event == "G_PRESSED" and arg == 4) then
+ Letterbox = ""
+
+ --Save current cursor position
+ x, y = GetMousePosition();
+
+ --Open Inventory
+ ToggleInvWithSleep()
+
+ --Equip items by X and Y axis, Item Volume (1 or 2), IsLetterbox(VideoOption in game "X" if set),
+ --Modificator ("ralt", etc)
+ --EquipItemInventory(10, 6, 1, Letterbox) 
+ --EquipItemInventory(10, 5, 1, Letterbox) 
+ EquipItemInventory(9, 5, 2, Letterbox) 
+ --EquipItemInventory(8, 5, 2, Letterbox) 
+
+
+ --EquipItemInventory(3, 2, 1, Letterbox, "lalt") 
+ --EquipItemInventory(4, 1, 2, Letterbox) 
+ --EquipItemInventory(5, 1, 2, Letterbox) 
+
+ --Close Inventory
+ ToggleInvWithSleep()
+
+ --Restore original mouse position
+ MoveMouseTo(x, y)
+end
+
+
+-------------------------------------------
+--View current mouse position on LCD screen
+ if (event == "G_PRESSED" and arg == 2) then
+ ClearLCD ()
+ x, y = GetMousePosition();
+ OutputLCDMessage("Mouse is at x=" .. x .. "; y= " .. y, 2000)
+ end
+end
+
+----------------------------------------
+--Random clicking inside square limits--
+----------------------------------------
+function EquipItemInventory (Item_X, Item_Y, SlotVolume, IsLetterbox, Modify)
+
+ if IsLetterbox == "X" then
+  MinVal_X = {48400, 50600, 51800, 53500, 55200, 56700, 58500, 60200, 61800, 63500}
+  MaxVal_X = {49400, 51000, 52700, 54300, 56000, 57700, 59300, 61000, 62700, 64300}
+  MinVal_Y = {35700, 38500, 41000, 43800, 46400, 48800}
+  MaxVal_Y = {37700, 39800, 42500, 45000, 47700, 50200}
+ else
+  MinVal_X = {48933, 50610, 52351, 53951, 55630, 57301, 58975, 60580, 62253, 63930}
+  MaxVal_X = {48938, 50614, 52353, 53958, 55633, 57304, 58979, 60482, 62256, 63934}
+  MinVal_Y = {36200, 39000, 41800, 44800, 48461, 51561}
+  MaxVal_Y = {37700, 40500, 43500, 46500, 48468, 51566}
+ end
+
+ --Determine click position
+ MouseX = MinVal_X[Item_X] + math.random(1, math.abs(MaxVal_X[Item_X] - MinVal_X[Item_X]))
+ if SlotVolume == 1 then
+  MouseY = MinVal_Y[Item_Y] + math.random(1, math.abs(MaxVal_Y[Item_Y] - MinVal_Y[Item_Y]))
+ elseif SlotVolume == 2 then
+  MouseY = MinVal_Y[Item_Y] + math.random(1, math.abs(MaxVal_Y[Item_Y+1] - MinVal_Y[Item_Y]))
+ end
+
+ --Move mouse cursor to item position
+ MoveMouseTo(MouseX, MouseY)
+ SleepRandomStd()
+
+ if Modify then
+  PressKey(Modify)
+  SleepRandomStd()
+ end
+
+ --Mouse right click
+ PressAndReleaseMouseButton(3)
+ SleepRandom(125, 50);
+
+ if Modify then
+  ReleaseKey(Modify)
+  SleepRandomStd()
+ end
+
+end
+
+function ToggleInvWithSleep()
+ PressAndReleaseKey("c")
+ SleepRandomStd()
+end
+
+function SleepRandomStd()
+ SleepRandom(40, 15)
+end
+
+function SleepRandom(BaseMs, PlusMinusMs)
+  Sleep(math.random(((BaseMs - PlusMinusMs)),(BaseMs + PlusMinusMs)))
+end
