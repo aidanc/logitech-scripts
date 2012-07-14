@@ -1,4 +1,52 @@
 function OnEvent(event, arg)
+
+ -------------------------------------------
+ --View current mouse position on LCD screen
+ if (event == "G_PRESSED" and arg == 2) then
+  ClearLCD ()
+  x, y = GetMousePosition();
+  OutputLCDMessage("Mouse is at x=" .. x .. "; y= " .. y, 2000)
+ end
+
+
+-------------------------------------------
+--Exit game and restart
+ if (event == "G_PRESSED" and arg == 3) then
+  PressAndReleaseKey("t")
+  SleepRandom(7300, 50)
+
+  PressAndReleaseKey("escape")
+
+  xpos = 30000 + math.random(1, 4500)
+  ypos = 34100 + math.random(1, 1900)
+  MoveMouseTo(xpos, ypos)
+  SleepRandomStd()
+
+  PressAndReleaseMouseButton(1)
+  SleepRandom(2000, 150)
+
+  xpos = 4050 + math.random(1, 7000)
+  ypos = 24000 + math.random(1, 3000)
+  MoveMouseTo(xpos, ypos)
+  SleepRandom(1600, 150)
+  PressAndReleaseMouseButton(1)
+  SleepRandom(250, 30)
+
+  xpos = 57852 + math.random(1, 50)
+  ypos = 19264 + math.random(1, 50)
+  MoveMouseTo(xpos, ypos)
+
+  SleepRandom(5000, 700)
+  PressAndReleaseKey("3")
+  SleepRandom(150, 100)
+  PressAndReleaseKey("4")
+
+
+ end
+
+
+
+
  if (event == "G_PRESSED" and arg == 6) then
  Letterbox = ""
 
@@ -32,17 +80,9 @@ function OnEvent(event, arg)
 
  --Restore original mouse position
  MoveMouseTo(x, y)
-end
-
-
--------------------------------------------
---View current mouse position on LCD screen
- if (event == "G_PRESSED" and arg == 2) then
- ClearLCD ()
- x, y = GetMousePosition();
- OutputLCDMessage("Mouse is at x=" .. x .. "; y= " .. y, 2000)
  end
 end
+
 
 ----------------------------------------
 --Random clicking inside square limits--
@@ -80,8 +120,7 @@ function EquipItemInventory (Item_X, Item_Y, SlotVolume, IsLetterbox, Modify)
 
  --Mouse right click
  PressAndReleaseMouseButton(3)
- --SleepRandom(125, 50);
- SleepRandom(90, 20);
+ SleepRandom(80, 20);
 
  if Modify then
   ReleaseKey(Modify)
