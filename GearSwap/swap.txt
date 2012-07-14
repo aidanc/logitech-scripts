@@ -1,5 +1,5 @@
 function OnEvent(event, arg)
- if (event == "G_PRESSED" and arg == 4) then
+ if (event == "G_PRESSED" and arg == 6) then
  Letterbox = ""
 
  --Save current cursor position
@@ -10,10 +10,17 @@ function OnEvent(event, arg)
 
  --Equip items by X and Y axis, Item Volume (1 or 2), IsLetterbox(VideoOption in game "X" if set),
  --Modificator ("ralt", etc)
- --EquipItemInventory(10, 6, 1, Letterbox) 
- --EquipItemInventory(10, 5, 1, Letterbox) 
+ EquipItemInventory(10, 6, 1, Letterbox) 
+ EquipItemInventory(10, 5, 1, Letterbox) 
  EquipItemInventory(9, 5, 2, Letterbox) 
- --EquipItemInventory(8, 5, 2, Letterbox) 
+ EquipItemInventory(8, 5, 2, Letterbox) 
+ EquipItemInventory(7, 5, 2, Letterbox) 
+ EquipItemInventory(6, 5, 2, Letterbox) 
+ EquipItemInventory(5, 5, 2, Letterbox) 
+ EquipItemInventory(4, 5, 2, Letterbox) 
+ EquipItemInventory(3, 5, 2, Letterbox) 
+ EquipItemInventory(2, 6, 1, Letterbox) 
+ EquipItemInventory(2, 5, 1, Letterbox, "ralt") 
 
 
  --EquipItemInventory(3, 2, 1, Letterbox, "lalt") 
@@ -73,7 +80,8 @@ function EquipItemInventory (Item_X, Item_Y, SlotVolume, IsLetterbox, Modify)
 
  --Mouse right click
  PressAndReleaseMouseButton(3)
- SleepRandom(125, 50);
+ --SleepRandom(125, 50);
+ SleepRandom(90, 20);
 
  if Modify then
   ReleaseKey(Modify)
@@ -88,7 +96,7 @@ function ToggleInvWithSleep()
 end
 
 function SleepRandomStd()
- SleepRandom(40, 15)
+ SleepRandom(70, 15)
 end
 
 function SleepRandom(BaseMs, PlusMinusMs)
