@@ -1,5 +1,8 @@
 function OnEvent(event, arg)
 
+ NUM_RADIANT_STAR=1
+ NUM_PERFECT_STAR=1
+
  mkey = GetMKeyState()
  -------------------------------------------
  --View current mouse position on LCD screen
@@ -37,10 +40,9 @@ function OnEvent(event, arg)
  -----
  if (event == "G_PRESSED" and mkey == 1 and arg == 1) then
   ClearLCD()
-  numGems=1
-  OutputLCDMessage("Crafting " .. numGems .. "Radiant Star(s)", 10000)
-  CraftRadiantStar(numGems)
-  OutputLCDMessage("Finished Radiant Star.", 10000)
+  OutputLCDMessage("Crafting " .. NUM_RADIANT_STAR .. "Radiant Star(s)", 10000)
+  CraftRadiantStar(NUM_RADIANT_STAR)
+  OutputLCDMessage("Finished.", 10000)
  end
 
  -----
@@ -48,10 +50,9 @@ function OnEvent(event, arg)
  -----
  if (event == "G_PRESSED" and mkey == 1 and arg == 2) then
   ClearLCD()
-  numGems=1
-  OutputLCDMessage("Crafting " .. numGems .. "Perfect Star(s)", 10000)
-  CraftPerfectStar(numGems)
-  OutputLCDMessage("Finished Perfect Star.", 10000)
+  OutputLCDMessage("Crafting " .. NUM_PERFECT_STAR .. "Perfect Star(s)", 10000)
+  CraftPerfectStar(NUM_PERFECT_STAR)
+  OutputLCDMessage("Finished.", 10000)
  end
 
 
@@ -61,14 +62,10 @@ function OnEvent(event, arg)
  if (event == "G_PRESSED" and mkey == 1 and arg == 3) then
   ClearLCD()
 
---  L0Crafts = 243
---  L1Crafts = 81
---  L2Crafts = 27
---  L3Crafts = 9
---  L4Crafts = 3
---  L5Crafts = 1
+  --Edit these fields if you want to craft custom amounts of
+  --gems at different levels:
 
-  L0Crafts = 100
+  L0Crafts = 0
   L1Crafts = 0
   L2Crafts = 0
   L3Crafts = 0
@@ -126,8 +123,6 @@ function CraftPerfectStar(num)
 end
 
 
-
-
 function CraftGemLevel(level, times)
 
   if(times == 0) then
@@ -153,9 +148,9 @@ function ClickRepeat(times)
     --OutputLCDMessage("Clicking mouse!", 2000)
     SleepRandom(WaitTimeBaseMs, WaitTimeVarMs)
     count = count + 1
+    OutputLCDMessage("Finished.", 10000)
   end
 end
-
 
 function ClickGemMenuItem(baseX, baseY, gemLevel)
   yOffset = gemStartY - (gemLevel * 1540)
@@ -175,10 +170,9 @@ function MoveMouseToGemLevel(gemLevel)
   MoveMouseTo(xRand, yRand)
 end
 
-
 function SleepRandom(BaseMs, PlusMinusMs)
   sleepTime = valuePlusMinus(BaseMs, PlusMinusMs)
-  OutputLCDMessage("Sleeping for: " .. sleepTime, 2000)
+  --OutputLCDMessage("Sleeping for: " .. sleepTime, 2000)
   Sleep(sleepTime)
 end
 
