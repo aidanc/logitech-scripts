@@ -3,6 +3,11 @@ function OnEvent(event, arg)
  NUM_RADIANT_STAR=1
  NUM_PERFECT_STAR=1
 
+ RS_BUTTON=1
+ PS_BUTTON=2
+ CUSTOM_BUTTON=3
+ INIT_BUTTON=6
+
  mkey = GetMKeyState()
  -------------------------------------------
  --View current mouse position on LCD screen
@@ -20,7 +25,7 @@ function OnEvent(event, arg)
  -----
  --Save x/y coords for base gem type to craft
  -----
- if (event == "G_PRESSED" and mkey == 1 and arg == 6) then
+ if (event == "G_PRESSED" and mkey == 1 and arg == INIT_BUTTON) then
    --constants
    GemStepSize = 1540
 
@@ -31,35 +36,63 @@ function OnEvent(event, arg)
    WaitTimeVarMs = 150
 
    gemStartX, gemStartY = GetMousePosition();
-   OutputLCDMessage("Mouse is at x=" .. gemStartX .. "; y= " .. gemStartY, 10000)
+   --OutputLCDMessage("Mouse is at x=" .. gemStartX .. "; y= " .. gemStartY, 10000)
+   OutputLCDMessage("Gem Crafting Ready!", 10000)
 
  end
 
  -----
  --Craft radiant star
  -----
- if (event == "G_PRESSED" and mkey == 1 and arg == 1) then
+ if (event == "G_PRESSED" and mkey == 1 and arg == RS_BUTTON) then
+  --Check starting x/y was set
+  if(not InitOK()) then
+    DisplayNoInit()
+    return
+  end
+
+  --Craft Gems
   ClearLCD()
   OutputLCDMessage("Crafting " .. NUM_RADIANT_STAR .. "Radiant Star(s)", 10000)
   CraftRadiantStar(NUM_RADIANT_STAR)
   OutputLCDMessage("Finished.", 10000)
+
+  --Cleanup
+  Teardown()
  end
 
  -----
  --Craft perfect star
  -----
- if (event == "G_PRESSED" and mkey == 1 and arg == 2) then
+ if (event == "G_PRESSED" and mkey == 1 and arg == PS_BUTTON) then
+  --Check starting x/y was set
+  if(not InitOK()) then
+    DisplayNoInit()
+    return
+  end
+
+  --Craft Gems
   ClearLCD()
   OutputLCDMessage("Crafting " .. NUM_PERFECT_STAR .. "Perfect Star(s)", 10000)
   CraftPerfectStar(NUM_PERFECT_STAR)
   OutputLCDMessage("Finished.", 10000)
+
+  --Cleanup
+  Teardown()
  end
 
 
  -----
  --Craft custom numbers
  -----
- if (event == "G_PRESSED" and mkey == 1 and arg == 3) then
+ if (event == "G_PRESSED" and mkey == 1 and arg == CUSTOM_BUTTON) then
+  --Check starting x/y was set
+  if(not InitOK()) then
+    DisplayNoInit()
+    return
+  end
+
+  --Craft Gems
   ClearLCD()
 
   --Edit these fields if you want to craft custom amounts of
@@ -81,6 +114,8 @@ function OnEvent(event, arg)
 
   OutputLCDMessage("Finished.", 10000)
 
+  --Cleanup
+  Teardown()
  end
 
 end
@@ -144,11 +179,12 @@ end
 function ClickRepeat(times)
   count = 0
   while (count < times) do
+    numLeft = times - count
+    OutputLCDMessage(numLeft .. " more of this type", 4000)
     PressAndReleaseMouseButton(1)
     --OutputLCDMessage("Clicking mouse!", 2000)
     SleepRandom(WaitTimeBaseMs, WaitTimeVarMs)
     count = count + 1
-    OutputLCDMessage("Finished.", 10000)
   end
 end
 
@@ -168,6 +204,22 @@ function MoveMouseToGemLevel(gemLevel)
   xRand = valuePlusMinus(gemStartX, 300)
   yRand = valuePlusMinus(yGemLevel, 15)
   MoveMouseTo(xRand, yRand)
+end
+
+function InitOK()
+  if(gemStartX == 0 or gemStartY == 0) then
+    return false
+  end
+  return true
+end
+
+function Teardown()
+  gemStartX=0
+  gemStartY=0
+end
+
+function DisplayNoInit()
+  OutputLCDMessage("Error! Start position not set!", 20000)
 end
 
 function SleepRandom(BaseMs, PlusMinusMs)
