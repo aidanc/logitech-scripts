@@ -1,0 +1,187 @@
+function OnEvent(event, arg)
+
+ mkey = GetMKeyState()
+ -------------------------------------------
+ --View current mouse position on LCD screen
+ if (event == "G_PRESSED" and mkey == 3 and arg == 1) then
+  ClearLCD ()
+  x, y = GetMousePosition();
+  OutputLCDMessage("Mouse is at x=" .. x .. "; y= " .. y, 2000)
+ end
+
+
+----------------------
+--Gem crafting
+----------------------
+
+ -----
+ --Save x/y coords for base gem type to craft
+ -----
+ if (event == "G_PRESSED" and mkey == 1 and arg == 6) then
+   --constants
+   GemStepSize = 1540
+
+   craftButtonX = 9836
+   craftButtonY = 47389
+
+   WaitTimeBaseMs = 3500
+   WaitTimeVarMs = 150
+
+   gemStartX, gemStartY = GetMousePosition();
+   OutputLCDMessage("Mouse is at x=" .. gemStartX .. "; y= " .. gemStartY, 10000)
+
+ end
+
+ -----
+ --Craft radiant star
+ -----
+ if (event == "G_PRESSED" and mkey == 1 and arg == 1) then
+  ClearLCD()
+  numGems=1
+  OutputLCDMessage("Crafting " .. numGems .. "Radiant Star(s)", 10000)
+  CraftRadiantStar(numGems)
+  OutputLCDMessage("Finished Radiant Star.", 10000)
+ end
+
+ -----
+ --Craft perfect star
+ -----
+ if (event == "G_PRESSED" and mkey == 1 and arg == 2) then
+  ClearLCD()
+  numGems=1
+  OutputLCDMessage("Crafting " .. numGems .. "Perfect Star(s)", 10000)
+  CraftPerfectStar(numGems)
+  OutputLCDMessage("Finished Perfect Star.", 10000)
+ end
+
+
+ -----
+ --Craft custom numbers
+ -----
+ if (event == "G_PRESSED" and mkey == 1 and arg == 3) then
+  ClearLCD()
+
+--  L0Crafts = 243
+--  L1Crafts = 81
+--  L2Crafts = 27
+--  L3Crafts = 9
+--  L4Crafts = 3
+--  L5Crafts = 1
+
+  L0Crafts = 100
+  L1Crafts = 0
+  L2Crafts = 0
+  L3Crafts = 0
+  L4Crafts = 0
+  L5Crafts = 0
+
+  CraftGemLevel(0, L0Crafts)
+  CraftGemLevel(1, L1Crafts)
+  CraftGemLevel(2, L2Crafts)
+  CraftGemLevel(3, L3Crafts)
+  CraftGemLevel(4, L4Crafts)
+  CraftGemLevel(5, L5Crafts)
+
+  OutputLCDMessage("Finished.", 10000)
+
+ end
+
+end
+
+
+function CraftRadiantStar(num)
+
+  L0Crafts = 243 * num
+  L1Crafts = 81 * num
+  L2Crafts = 27 * num
+  L3Crafts = 9 * num
+  L4Crafts = 3 * num
+  L5Crafts = 1 * num
+
+  CraftGemLevel(0, L0Crafts)
+  CraftGemLevel(1, L1Crafts)
+  CraftGemLevel(2, L2Crafts)
+  CraftGemLevel(3, L3Crafts)
+  CraftGemLevel(4, L4Crafts)
+  CraftGemLevel(5, L5Crafts)
+
+end
+
+function CraftPerfectStar(num)
+
+  L0Crafts = 81 * num
+  L1Crafts = 27 * num
+  L2Crafts = 9 * num
+  L3Crafts = 3 * num
+  L4Crafts = 1 * num
+  L5Crafts = 0
+
+  CraftGemLevel(0, L0Crafts)
+  CraftGemLevel(1, L1Crafts)
+  CraftGemLevel(2, L2Crafts)
+  CraftGemLevel(3, L3Crafts)
+  CraftGemLevel(4, L4Crafts)
+  CraftGemLevel(5, L5Crafts)
+
+end
+
+
+
+
+function CraftGemLevel(level, times)
+
+  if(times == 0) then
+    return
+  end
+
+  -- setup cursor
+  MoveMouseToGemLevel(level)
+  PressAndReleaseMouseButton(1)
+  SleepRandom(250, 100)
+
+  --move to craft button
+  MoveMouseToCraftButton()
+
+  -- click x times
+  ClickRepeat(times, WaitTimeBaseMs, WaitTimeVarMs)
+end
+
+function ClickRepeat(times)
+  count = 0
+  while (count < times) do
+    PressAndReleaseMouseButton(1)
+    --OutputLCDMessage("Clicking mouse!", 2000)
+    SleepRandom(WaitTimeBaseMs, WaitTimeVarMs)
+    count = count + 1
+  end
+end
+
+
+function ClickGemMenuItem(baseX, baseY, gemLevel)
+  yOffset = gemStartY - (gemLevel * 1540)
+end
+
+function MoveMouseToCraftButton()
+  xRand = valuePlusMinus(craftButtonX, 300)
+  yRand = valuePlusMinus(craftButtonY, 15)
+  MoveMouseTo(xRand, yRand)
+end
+
+function MoveMouseToGemLevel(gemLevel)
+  yGemLevel = gemStartY - (gemLevel * 1540)
+
+  xRand = valuePlusMinus(gemStartX, 300)
+  yRand = valuePlusMinus(yGemLevel, 15)
+  MoveMouseTo(xRand, yRand)
+end
+
+
+function SleepRandom(BaseMs, PlusMinusMs)
+  sleepTime = valuePlusMinus(BaseMs, PlusMinusMs)
+  OutputLCDMessage("Sleeping for: " .. sleepTime, 2000)
+  Sleep(sleepTime)
+end
+
+function valuePlusMinus(baseValue, plusMinusAmt)
+  return math.random(((baseValue - plusMinusAmt)), (baseValue + plusMinusAmt))
+end
